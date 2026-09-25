@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+.dashboard {
+    display: grid;
+    grid-template-columns: 350px 1fr 1fr;
+    gap: 20px;
+    padding: 20px;
+    height: 95vh;
+}
+.panel {
+    background: #1e1e1e;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #333;
+    overflow-y: auto;
+}
+h2 { color: #4caf50; margin-top: 0; }
+.chat-bubble { padding: 10px; margin: 5px; border-radius: 10px; background: #333; }
+.node { background: #2c2c2c; padding: 10px; margin: 5px 0; border-left: 4px solid #555; transition: 0.3s; }
+.node.active { border-color: #ffeb3b; background: #3d3b25; }
+.node.success { border-color: #4caf50; background: #253d28; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+th, td { border: 1px solid #333; padding: 8px; text-align: left; }
+th { background: #333; }
+button { background: #4caf50; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; }

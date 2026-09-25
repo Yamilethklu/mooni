@@ -2,48 +2,39 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>MOONI Dashboard</title>
-    <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f4f4f9; }
-        .container { display: flex; gap: 20px; width: 100%; max-width: 1200px; }
-        .box { background: white; padding: 20px; border-radius: 8px; flex: 1; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        input { display: block; width: 100%; margin: 10px 0; padding: 8px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    </style>
+    <title>MOONI - Dashboard Unificado</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>MOONI Dashboard</h1>
-    <div class="container">
-        <div class="box">
-            <h3>Emulador WhatsApp</h3>
+    <div class="dashboard">
+        <!-- Sección Izquierda: WhatsApp -->
+        <div class="panel">
+            <h2>WhatsApp Emulador</h2>
             <input id="tel" placeholder="Teléfono">
             <input id="orig" placeholder="Origen">
             <input id="dest" placeholder="Destino">
             <input id="oferta" placeholder="Oferta">
             <button onclick="solicitar()">Enviar Solicitud</button>
+            <div class="chat-bubble">Bot: Hola! ¿A dónde vamos hoy?</div>
         </div>
-        <div class="box">
-            <h3>Tabla de Viajes</h3>
+        <!-- Sección Central: Monitor -->
+        <div class="panel">
+            <h2>Monitor de Flujo</h2>
+            <div class="node">1. Webhook Recibido</div>
+            <div class="node">2. Google Routes API</div>
+            <div class="node">3. Algoritmo Tarifa</div>
+            <div class="node">4. Persistencia DB</div>
+            <pre id="console" style="font-size: 0.7em;"></pre>
+        </div>
+        <!-- Sección Derecha: Tabla -->
+        <div class="panel">
+            <h2>Control de Viajes</h2>
             <table>
-                <thead><tr><th>ID</th><th>Estado</th><th>Precio</th></tr></thead>
+                <thead><tr><th>ID</th><th>Tel</th><th>KM</th><th>Precio</th><th>Estado</th><th>Acción</th></tr></thead>
                 <tbody id="viajes-body"></tbody>
             </table>
         </div>
     </div>
-    <script>
-        async function cargarViajes() {
-            const res = await fetch('/api/v1/webhooks/viajes');
-            const data = await res.json();
-            const body = document.getElementById('viajes-body');
-            body.innerHTML = data.map(v => `<tr><td>${v.id}</td><td>${v.estado}</td><td>${v.precio_sugerido}</td></tr>`).join('');
-        }
-        async function solicitar() {
-            const data = { telefono_pasajero: document.getElementById('tel').value, origen_texto: document.getElementById('orig').value, destino_texto: document.getElementById('dest').value, oferta_pasajero: document.getElementById('oferta').value };
-            await fetch('/api/v1/webhooks/solicitud-viaje', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
-            cargarViajes();
-        }
-        cargarViajes();
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
