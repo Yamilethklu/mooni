@@ -1,45 +1,49 @@
 'use client';
 import { useState } from 'react';
-import { Table, Workflow, Bot, Settings, Activity } from 'lucide-react';
+import { Table, ArrowLeft, Activity } from 'lucide-react';
+import InteractiveSimulation from '../components/interactive-simulation';
+import AirtableModule from '../components/airtable-table';
+import N8NCanvasModule from '../components/n8n-canvas';
+import WhatsAppModule from '../components/whatsapp-emulator';
+import ApiSettingsModule from '../components/api-settings-module';
 
-// Componentes modulares
-const AirtableModule = () => <div className="p-4 border border-white/10 rounded-lg">Tabla de Control estilo Airtable</div>;
-const N8NCanvasModule = () => <div className="p-4 border border-white/10 rounded-lg">Canvas de Flujo n8n</div>;
-const WhatsAppModule = () => <div className="p-4 border border-white/10 rounded-lg">Emulador WhatsApp & QR</div>;
-const ApiSettingsModule = () => <div className="p-4 border border-white/10 rounded-lg">Configuración de APIs</div>;
-
-export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState('table');
-
-  const tabs = [
-    { id: 'table', name: 'Airtable', icon: <Table size={18}/> },
-    { id: 'flow', name: 'n8n Flow', icon: <Workflow size={18}/> },
-    { id: 'chat', name: 'WhatsApp', icon: <Bot size={18}/> },
-    { id: 'settings', name: 'Config', icon: <Settings size={18}/> }
-  ];
+export default function Home() {
+  const [view, setView] = useState<'sim' | 'admin'>('sim');
+  const [adminTab, setAdminTab] = useState('table');
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-gray-200 p-8">
-      <header className="mb-8 border-b border-white/10 pb-4 flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2"><Activity className="text-emerald-500"/> MOONI SaaS Dashboard</h1>
-        <div className="flex gap-2">
-          {tabs.map(tab => (
-            <button 
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`px-4 py-2 rounded-md flex items-center gap-2 transition ${activeTab === tab.id ? 'bg-white/10 text-white' : 'hover:bg-white/5'}`}
-            >
-              {tab.icon} {tab.name}
-            </button>
-          ))}
+    <div className="min-h-screen bg-[#0a0a0a] text-gray-200">
+      <nav className="border-b border-white/10 p-4 flex justify-between items-center bg-[#121212]">
+        <div className="flex items-center gap-2 font-bold text-white text-xl">
+          <Activity className="text-emerald-500"/> MOONI 🚗
         </div>
-      </header>
+        {view === 'sim' ? (
+          <button onClick={() => setView('admin')} className="bg-emerald-600 px-4 py-2 rounded text-sm flex items-center gap-2">
+            <Table size={16}/> Ir al Panel de Control
+          </button>
+        ) : (
+          <button onClick={() => setView('sim')} className="bg-gray-700 px-4 py-2 rounded text-sm flex items-center gap-2">
+            <ArrowLeft size={16}/> Volver a la Simulación
+          </button>
+        )}
+      </nav>
 
-      <main className="bg-[#121212] border border-white/10 rounded-xl p-6 min-h-[500px]">
-        {activeTab === 'table' && <AirtableModule />}
-        {activeTab === 'flow' && <N8NCanvasModule />}
-        {activeTab === 'chat' && <WhatsAppModule />}
-        {activeTab === 'settings' && <ApiSettingsModule />}
+      <main className="p-8">
+        {view === 'sim' ? (
+          <InteractiveSimulation />
+        ) : (
+          <div className="space-y-6">
+             <div className="flex gap-4 border-b border-white/10 pb-4">
+                {['table', 'flow', 'chat', 'settings'].map(t => (
+                  <button key={t} onClick={() => setAdminTab(t)} className={`capitalize ${adminTab === t ? 'text-emerald-400' : 'text-gray-400'}`}>{t}</button>
+                ))}
+             </div>
+             {adminTab === 'table' && <AirtableModule />}
+             {adminTab === 'flow' && <N8NCanvasModule />}
+             {adminTab === 'chat' && <WhatsAppModule />}
+             {adminTab === 'settings' && <ApiSettingsModule />}
+          </div>
+        )}
       </main>
     </div>
   );
