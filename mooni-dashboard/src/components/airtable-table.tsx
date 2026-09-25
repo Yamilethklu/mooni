@@ -1,25 +1,6 @@
 'use client';
-import { useState } from 'react';
-
+import { useViajes, actualizarEstado, estados, Estado } from '../lib/mooni-store';
 export default function AirtableTable() {
-  const [viajes] = useState([
-    { id: '1', tel: '551234', origen: 'Casa', destino: 'Oficina', km: 5, min: 10, precio: 100, oferta: 90, estado: 'solicitado' }
-  ]);
-
-  return (
-    <table className="w-full text-white border-collapse">
-      <thead>
-        <tr className="bg-gray-800">
-          <th>ID</th><th>Tel</th><th>KM</th><th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        {viajes.map(v => (
-          <tr key={v.id} className="border-b border-gray-700">
-            <td>{v.id}</td><td>{v.tel}</td><td>{v.km}</td><td>{v.estado}</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
+ const viajes=useViajes();
+ return <div className="overflow-x-auto bg-gray-900 rounded-xl border border-white/10"><div className="p-4"><h2 className="text-xl font-bold">Solicitudes</h2><p className="text-sm text-gray-400">{viajes.length} viajes guardados en este navegador</p></div><table className="w-full text-sm text-left whitespace-nowrap"><thead className="bg-gray-800"><tr>{['ID viaje','Teléfono','Origen','Destino','KM','Minutos','Precio sugerido','Oferta','Estado'].map(x=><th className="p-3" key={x}>{x}</th>)}</tr></thead><tbody>{viajes.map(v=><tr key={v.id} className="border-t border-white/10"><td className="p-3">{v.id}</td><td className="p-3">{v.pasajero}</td><td className="p-3">{v.origen}</td><td className="p-3">{v.destino}</td><td className="p-3">{v.km}</td><td className="p-3">{v.min}</td><td className="p-3">${v.precioSugerido.toFixed(2)}</td><td className="p-3">${v.oferta.toFixed(2)}</td><td className="p-3"><select aria-label={`Estado del viaje ${v.id}`} value={v.estado} onChange={e=>actualizarEstado(v.id,e.target.value as Estado)} className="bg-black p-2 rounded">{estados.map(s=><option key={s}>{s}</option>)}</select></td></tr>)}</tbody></table>{!viajes.length && <p className="p-5 text-gray-400">Solicita un viaje desde la pantalla principal para verlo aquí.</p>}</div>
 }

@@ -1,13 +1,1 @@
-'use client';
-export default function ApiSettingsModule() {
-  return (
-    <div className="p-6 bg-gray-900 rounded-xl border border-white/10 text-white">
-      <h2 className="text-xl font-bold mb-4">Configuración de APIs</h2>
-      <div className="space-y-4">
-        <input className="w-full p-2 bg-black border border-gray-700 rounded" placeholder="GOOGLE_MAPS_API_KEY" />
-        <input className="w-full p-2 bg-black border border-gray-700 rounded" placeholder="WHATSAPP_TOKEN" />
-        <button className="bg-emerald-600 px-4 py-2 rounded">Guardar y Testear</button>
-      </div>
-    </div>
-  );
-}
+export default function ApiSettingsModule(){return <section className="p-6 bg-gray-900 rounded-xl space-y-3"><h2 className="text-xl font-bold">Conexiones de producción</h2><p>Configura las credenciales en las variables de entorno del proyecto Vercel. Nunca introduzcas tokens privados en un formulario público.</p><ul className="list-disc ml-6 text-gray-300"><li>GOOGLE_MAPS_API_KEY: Routes API para distancias y duración.</li><li>SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY: requieren base y rutas protegidas.</li><li>WHATSAPP_TOKEN y PHONE_ID: requieren integración oficial Meta Cloud API.</li><li>RENDER_BACKEND_URL y N8N_WEBHOOK_URL: conexiones opcionales pendientes.</li></ul><p className="text-amber-300">Estado actual: demostración local. Sin credenciales, el cálculo de distancia real no está disponible.</p></section>}

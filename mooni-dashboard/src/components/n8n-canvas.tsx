@@ -1,12 +1,3 @@
-export default function N8NCanvas() {
-  const nodes = ['Webhook', 'Google Routes', 'Tarifa', 'DB', 'Dispatch'];
-  return (
-    <div className="flex gap-4 p-8 bg-gray-900 rounded-lg">
-      {nodes.map((node, i) => (
-        <div key={i} className="p-4 border-2 border-emerald-500 bg-black rounded shadow-lg animate-pulse">
-          {node}
-        </div>
-      ))}
-    </div>
-  );
-}
+'use client';
+import {useState} from 'react';
+export default function N8NCanvas(){const [active,setActive]=useState(-1);const [times,setTimes]=useState<number[]>([]);const nodes=['Webhook entrante','Google Routes API v2','Algoritmo tarifa','Persistencia local'];async function run(){setTimes([]);for(let i=0;i<nodes.length;i++){setActive(i);const t=performance.now();await new Promise(r=>setTimeout(r,250));setTimes(prev=>[...prev,Math.round(performance.now()-t)]);}setActive(-1)}return <div className="bg-gray-900 p-6 rounded-xl space-y-5"><h2 className="text-xl font-bold">Monitor de flujo · demostración</h2><div className="flex flex-wrap items-center gap-3">{nodes.map((n,i)=><div key={n} className="flex items-center gap-3"><div className={`border rounded-xl p-4 ${i===active||times[i]?'border-emerald-400 bg-emerald-950':'border-gray-600'}`}>{n}<div className="text-xs text-gray-400">{times[i]!==undefined?`${times[i]} ms de animación`:'Pendiente'}</div></div>{i<3&&<span>→</span>}</div>)}</div><button onClick={run} disabled={active!==-1} className="bg-emerald-600 p-2 rounded disabled:opacity-50">Ejecutar prueba visual</button><p className="text-xs text-gray-400">Los tiempos corresponden a la animación del navegador; no representan llamadas reales a APIs.</p></div>}

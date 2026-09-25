@@ -1,25 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useMooniStore } from '../lib/mooni-store';
-
-export default function LiveMap({ estado }: { estado: string }) {
-  const [position, setPosition] = useState({ x: 10, y: 10 });
-
-  useEffect(() => {
-    if (estado === 'en_camino') {
-      const interval = setInterval(() => {
-        setPosition(prev => ({ x: prev.x + 1, y: prev.y + 0.5 }));
-      }, 100);
-      return () => clearInterval(interval);
-    }
-  }, [estado]);
-
-  return (
-    <div className="relative w-full h-64 bg-gray-950 rounded-xl overflow-hidden border border-white/10">
-      <div className="absolute top-2 left-2 text-xs text-emerald-400">Mapa en vivo: {estado}</div>
-      <div className="absolute transition-all duration-100 ease-linear" style={{ left: `${position.x}%`, top: `${position.y}%` }}>
-        <div className="text-2xl">🚗</div>
-      </div>
-    </div>
-  );
+import {useEffect,useState} from 'react';
+export default function LiveMap({estado,origen,destino}:{estado:string;origen:string;destino:string}) {
+ const [progress,setProgress]=useState(0);
+ useEffect(()=>{if (!['en_camino','en_viaje'].includes(estado)) return; const id=setInterval(()=>setProgress(p=>(p+1)%101),200);return ()=>clearInterval(id)},[estado]);
+ return <div className="relative h-80 bg-[#101b29] rounded-xl overflow-hidden border border-white/10" role="img" aria-label="Mapa esquemático simulado del trayecto"><div className="absolute inset-0 opacity-30" style={{backgroundImage:'linear-gradient(30deg,transparent 47%,#375774 48%,#375774 50%,transparent 51%),linear-gradient(140deg,transparent 47%,#375774 48%,#375774 50%,transparent 51%)',backgroundSize:'85px 70px'}}/><svg className="absolute inset-0 w-full h-full" viewBox="0 0 400 300" preserveAspectRatio="none"><path d="M60 220 Q160 220 190 145 T340 65" stroke="#fbbf24" strokeWidth="5" fill="none" strokeDasharray="10 6"/></svg><span className="absolute left-[12%] top-[72%] bg-emerald-700 rounded-full p-2">A</span><span className="absolute right-[12%] top-[17%] bg-amber-600 rounded-full p-2">B</span><span className="absolute text-2xl transition-all duration-200" style={{left:`${15+progress*.67}%`,top:`${72-progress*.53}%`}}>🚕</span><div className="absolute bottom-2 left-3 right-3 bg-black/75 rounded p-2 text-xs">{origen||'Origen'} → {destino||'Destino'} · {estado.replaceAll('_',' ')}</div></div>
 }
