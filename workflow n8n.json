@@ -1,0 +1,98 @@
+{
+  "name": "MOONI_MVP_Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "mooni-solicitar-viaje",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-1",
+      "name": "Webhook Solicitar Viaje",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "mooni-solicitar-viaje"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://maps.googleapis.com/maps/api/distancematrix/json",
+        "queryParameters": {
+          "parameters": [
+            { "name": "origins", "value": "={{ $json.body.origen }}" },
+            { "name": "destinations", "value": "={{ $json.body.destino }}" },
+            { "name": "key", "value": "={{ $env.GOOGLE_MAPS_API_KEY }}" },
+            { "name": "language", "value": "es" },
+            { "name": "units", "value": "metric" }
+          ]
+        },
+        "options": {}
+      },
+      "id": "maps-1",
+      "name": "Google Maps Distance Matrix",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// (El código del Nodo 3 arriba)\nconst TARIFA_BASE = 15;\nconst COSTO_POR_KM = 8;\nconst COSTO_POR_MIN = 1.5;\nconst TARIFA_MINIMA = 25;\n\nconst elemento = $input.first().json.rows[0].elements[0];\nconst distancia_km = +(elemento.distance.value / 1000).toFixed(2);\nconst tiempo_min = Math.ceil(elemento.duration.value / 60);\nconst precio_calculado = TARIFA_BASE + (distancia_km * COSTO_POR_KM) + (tiempo_min * COSTO_POR_MIN);\nconst precio_final = Math.max(Math.ceil(precio_calculado / 5) * 5, TARIFA_MINIMA);\n\nconst body = $('Webhook Solicitar Viaje').first().json.body;\nreturn [{ json: { telefono: body.telefono, origen: body.origen, destino: body.destino, distancia_km, tiempo_min, precio_sugerido: precio_final } }];"
+      },
+      "id": "code-1",
+      "name": "Calcular Tarifa",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": { "__rl": true, "value": "appXXXXXXXXXXXXXX", "mode": "id" },
+        "table": { "__rl": true, "value": "tblViajes", "mode": "id" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Origen_Texto": "={{ $json.origen }}",
+            "Destino_Texto": "={{ $json.destino }}",
+            "Distancia_KM": "={{ $json.distancia_km }}",
+            "Tiempo_Min": "={{ $json.tiempo_min }}",
+            "Precio_Sugerido": "={{ $json.precio_sugerido }}",
+            "Estado_Viaje": "Solicitado"
+          }
+        }
+      },
+      "id": "airtable-1",
+      "name": "Airtable - Crear Viaje",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"viaje_id\": \"{{ $json.id }}\",\n  \"distancia_km\": {{ $json.fields.Distancia_KM }},\n  \"tiempo_min\": {{ $json.fields.Tiempo_Min }},\n  \"precio_sugerido\": {{ $json.fields.Precio_Sugerido }}\n}"
+      },
+      "id": "respond-1",
+      "name": "Responder a Typebot",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Solicitar Viaje": {
+      "main": [[{ "node": "Google Maps Distance Matrix", "type": "main", "index": 0 }]]
+    },
+    "Google Maps Distance Matrix": {
+      "main": [[{ "node": "Calcular Tarifa", "type": "main", "index": 0 }]]
+    },
+    "Calcular Tarifa": {
+      "main": [[{ "node": "Airtable - Crear Viaje", "type": "main", "index": 0 }]]
+    },
+    "Airtable - Crear Viaje": {
+      "main": [[{ "node": "Responder a Typebot", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}

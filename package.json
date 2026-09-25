@@ -1,0 +1,31 @@
+{
+  "name": "mooni-bot-backend",
+  "version": "1.0.0",
+  "description": "Backend y conector de mensajería para MOONI - Bot de transporte bajo demanda vía WhatsApp",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "keywords": [
+    "express",
+    "whatsapp",
+    "bot",
+    "mooni",
+    "n8n",
+    "airtable",
+    "google-routes"
+  ],
+  "author": "MOONI Team",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
