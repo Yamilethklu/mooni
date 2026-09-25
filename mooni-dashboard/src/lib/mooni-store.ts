@@ -2,7 +2,7 @@
 import { useSyncExternalStore } from 'react';
 
 export type Estado = 'solicitado' | 'buscando_conductor' | 'asignado' | 'en_camino' | 'en_viaje' | 'finalizado';
-export interface Viaje { nombrePasajero?: string; conductor?: string; vehiculo?: string; precioAcordado?: number; asignadoAt?: string; id: string; pasajero: string; origen: string; destino: string; km: number; min: number; precioSugerido: number; oferta: number; estado: Estado; createdAt: string; }
+export interface Viaje { nombrePasajero?: string; accessToken?: string; pasajeroId?: string; conductor?: string; vehiculo?: string; precioAcordado?: number; asignadoAt?: string; id: string; pasajero: string; origen: string; destino: string; km: number; min: number; precioSugerido: number; oferta: number; estado: Estado; createdAt: string; }
 const KEY = 'mooni-viajes-v1';
 const EMPTY: Viaje[] = [];
 let viajes: Viaje[] = EMPTY;
